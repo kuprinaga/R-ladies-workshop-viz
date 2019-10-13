@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Visualising data with R and ggplot</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Anastasia Kuprina" />
+    <link href="libs/font-awesome-5.3.1/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="other.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Visualising data with R and ggplot
+## Making cool charts &lt;3
+### Anastasia Kuprina
+### 22/10/2019
+
+---
+
+
+
+
+
+
+# Introduction
+
+.pull-left[
+* Data analyst @Seriously
+* Co-founder and organiser of codebar Helsinki
+* Data vis enthusiast, fan of #tidytuesday
+* Pro-bono data analyst for socio-economic causes
+* Cat lady 
+
+<i class="fab  fa-chrome "></i> https://kuprina.codes/
+
+<i class="fab  fa-twitter "></i> @Kuprinasha
+
+<i class="fab  fa-linkedin "></i> @anastasiakuprina
+]
+
+
+.pull-right[
+![Me](https://kuprina.codes/images/me_cut.jpg)
+]
+
+---
+
+# Seriously
+
+.pull-left[
+* Started in 2013
+* Two offices - Helsinki &amp; Los Angeles
+* Two live games - Best Fiends and Best Fiends Forever
+* One game in soft launch - Best Fiends Stars
+
+Looking for:
+* Data Scientist
+* Game Economy Manager
+* Senior Data Scientist
+]
+
+.pull-right[
+![Seriously_logo](https://www.seriously.com/wp-content/themes/evermade-bare-theme/assets/img/logo-light-noslogan.png)
+]
+
+
+---
+# Plan for tonight
+
+.pull-left[
+* Visualisation in general
+* Thinking behind ggplot
+* Basic plots - we'll cover a few main ones
+* More complex plots - replicating a few complex charts
+]
+
+.pull-right[
+![gif](https://media.giphy.com/media/3o7WTJMjG44pEebcJy/giphy.gif)
+]
+
+---
+# General visualisation principles: Who is it for?
+## Audience &amp; Questions
+Shoutout to Storytelling with data - must-read!
+
+http://www.storytellingwithdata.com/ 
+
+#### - Who is the the main audience?
+--
+
+#### - What is the main point you want to convey? Only the "pearls"!
+--
+
+#### - What do you want the audience to know or do?
+--
+
+#### - What is the "mood"? Is this a celebration, or call-to-action, or something else? 
+--
+
+#### - Who is the decision maker? What biases does the audience have that could potentially affect their response to our message?
+
+---
+# Which chart to pick?
+
+#### - Heatmap
+Good for visualising tabular format and leveraging color to show the magnitute of the numbers
+
+--
+#### - Scatterplot
+x &amp; y relationship
+
+--
+#### - Line graphs
+Most common with continuous data because a continuous line implies connection between the points
+
+---
+# Which chart to pick? #2
+
+#### - Slopegraphs
+Great for two time points comparisons; awful for many data points (unless you use color to accent those points audience must know about)
+
+--
+#### - Bar graphs 
+Use instead of histograms (they're fairly hard to read for non-technical users). Best kept with 0 y axis starting point and bars being wider than whitespace between them
+
+--
+#### - Stacked bar &amp; line
+Harder to interpret change over time but good for low amount of data
+
+--
+#### - Pie chart
+No.
+Seriously no.
+
+
+---
+# Why no to pie charts?
+
+* Do you think I like cats more than dogs?
+* Do I like sushi more than pets?
+
+.pull-left[
+![2dpie](pie_answer.png)
+]
+--
+.pull-right[
+
+![2dpie](pie.png)
+
+]
+
+---
+# But I really need to show that I like cats slightly more than dogs!
+
+
+![2dpie](pie_bars.png)
+
+---
+# Back to vis principles
+
+### Strip down &amp; Build up
++ Remove all the noise: chart border, gridlines, data markers, clean up axis, label data directly next to the last data point
+
+--
++ Use colour wisely to attract attention
+
+--
++ Do not rely on defaults
+
+--
++ Do not rotate axis text (52% slower reading time compared to normal text)
+
+--
++ Z eye movement
+
+--
++ Look away from the chart, look back - what's the first thing that you see? Is that what you want the audience to see first?
+
+--
++ Move title and legend to upper-left corner; that way the audience learns how to read the chart before looking at the data
+
+---
+# Applying the principles
+
+## Step 0: Starting point
+![](pie_bars.png)
+
+---
+# Applying the principles
+
+## Step 1: Remove y axis
+![](no_axis.png)
+
+---
+
+# Applying the principles
+
+## Step 2: Remove grid
+![](no_grid_2.png)
+
+---
+# Applying the principles
+
+## Step 3: Strip down color
+![](change_color_3.png)
+
+---
+# Applying the principles
+
+## Step 4: Add accent colour
+![](change_color_4.png)
+
+---
+# Applying the principles
+
+## Step 5: Move title to the left
+![](move_title_5.png)
+
+---
+# Applying the principles
+
+## Step 6: Increase font size
+![](increase_font_7.png)
+
+---
+# Applying the principles
+
+## Step 7: Add axis title
+![](add_axis_title_6.png)
+
+---
+
+# Before and after
+
+pull-left[
+![](pie_bars.png)
+]
+pull-right[
+![](increase_font_7.png)
+]
+
+---
+
+# The power of ggplot
+
+
+.pull-left[
+### Basic ggplot
+![](presentation_files/figure-html/plot-1-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+### Enhanced ggplot 
+![](presentation_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# Why extra libraries are useful?
+
+
+
+.pull-left[
+
+### ggplot only
+
+![](presentation_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+
+### ggplot + helpers
+
+![](presentation_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+]
+
+---
+# Thinking behind ggplot
+
+![thinking1](vis_layers.png)
+
+---
+# Thinking behind ggplot 2
+
+![thinking1](vis_layers2.png)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

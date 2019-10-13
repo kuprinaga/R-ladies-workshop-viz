@@ -8,3 +8,4 @@ TODO minimum:
 - nice chart tips (a few makeover examples)
 - nice chart with ggplot (a few makeover examples)
 
+Additional - based on survey
