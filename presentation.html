@@ -81,6 +81,58 @@ Looking for:
 ]
 
 ---
+# General visualisation principles
+
+![gestalt](gestalt.jpg)
+
+---
+# General visualisation principles
+
+![gestalt](gestalt_1.jpg)
+
+
+---
+# General visualisation principles
+
+![gestalt](gestalt_2.jpg)
+
+
+---
+# General visualisation principles
+
+![gestalt](gestalt_3.jpg)
+
+
+---
+# General visualisation principles
+
+![gestalt](gestalt_4.jpg)
+
+
+---
+# General visualisation principles
+
+![gestalt](gestalt_5.jpg)
+
+
+---
+# General visualisation principles
+
+![gestalt](gestalt_6.jpg)
+
+
+---
+# General visualisation principles
+
+![gestalt](gestalt_7.jpg)
+
+
+---
+# General visualisation principles
+
+![gestalt](gestalt_8.jpg)
+
+---
 # General visualisation principles: Who is it for?
 ## Audience &amp; Questions
 Shoutout to Storytelling with data - must-read!
@@ -234,10 +286,10 @@ Seriously no.
 
 # Before and after
 
-pull-left[
+.pull-left[
 ![](pie_bars.png)
 ]
-pull-right[
+.pull-right[
 ![](increase_font_7.png)
 ]
 
@@ -248,11 +300,27 @@ pull-right[
 
 .pull-left[
 ### Basic ggplot
+
+```r
+# what's the best country for Riesling?
+basic
+```
+
 ![](presentation_files/figure-html/plot-1-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[
 ### Enhanced ggplot 
+
+```r
+# what's the best country for Riesling?
+edited +
+  labs(y = 'Average rating of all Rieslings produced in a given country',
+       x = '',
+       title = 'Where does best rated Riesling come from?',
+       subtitle = 'Average Riesling wine rating by country')
+```
+
 ![](presentation_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
 ]
 
@@ -263,19 +331,33 @@ pull-right[
 
 
 .pull-left[
-
 ### ggplot only
+
+
+```r
+# what's the best country for Riesling?
+edited +
+  labs(y = 'Average rating of all Rieslings produced in a given country',
+       x = '',
+       title = 'Where does best rated Riesling come from?',
+       subtitle = 'Average Riesling wine rating by country')
+```
 
 ![](presentation_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
 
 ]
 
 .pull-right[
-
 ### ggplot + helpers
 
-![](presentation_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
 
+```r
+# what's the best country for Riesling?
+grid.newpage()
+grid.draw(p_with_extra)
+```
+
+![](presentation_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -287,6 +369,97 @@ pull-right[
 # Thinking behind ggplot 2
 
 ![thinking1](vis_layers2.png)
+
+---
+# What data do we need?
+
+![tidy_data](tidy_data.png)
+
+
+---
+# How to get that data?
+
+.pull-left[
+
+```r
+fake_data &lt;- tibble(Robot_words = c('Beep', 'Boop', 'Woop'), 
+                    Robot = c(2,3,0), 
+                    Terminator = c(1,1,5)) 
+
+head(fake_data)
+```
+
+```
+## # A tibble: 3 x 3
+##   Robot_words Robot Terminator
+##   &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Beep            2          1
+## 2 Boop            3          1
+## 3 Woop            0          5
+```
+
+]
+.pull-right[
+
+```r
+fake_data_long &lt;- tibble(Robot_words = c('Beep', 'Boop', 'Woop'), 
+                    Robot = c(2,3,0), 
+                    Terminator = c(1,1,5)) %&gt;%
+  gather(Type_of_robot, Frequency, -Robot_words)
+
+head(fake_data_long)
+```
+
+```
+## # A tibble: 6 x 3
+##   Robot_words Type_of_robot Frequency
+##   &lt;chr&gt;       &lt;chr&gt;             &lt;dbl&gt;
+## 1 Beep        Robot                 2
+## 2 Boop        Robot                 3
+## 3 Woop        Robot                 0
+## 4 Beep        Terminator            1
+## 5 Boop        Terminator            1
+## 6 Woop        Terminator            5
+```
+
+]
+
+---
+.pull-left[
+
+
+```r
+ggplot(data = fake_data) +
+  geom_point(aes(x = Robot_words, y = Robot),
+             color = 'orange') +
+  geom_point(aes(x = Robot_words, y = Terminator),
+             color = 'darkgrey') + 
+  theme_classic() +
+  labs(x = 'Common robot words',
+       y = 'How often they appear in data',
+       title = 'Mysterious robot word data')
+```
+
+![](presentation_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+
+```r
+ggplot(data = fake_data_long) +
+  geom_point(aes(x = Robot_words, 
+                 y = Frequency,
+                 color = Type_of_robot)) +
+  theme_classic() +
+  scale_color_manual(values = c('orange', 'darkgrey')) +
+  labs(x = 'Common robot words',
+       y = 'How often they appear in data',
+       title = 'Mysterious robot word data',
+       color = 'Robot type') 
+```
+
+![](presentation_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
