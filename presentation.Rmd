@@ -309,7 +309,7 @@ Seriously no.
 ---
 
 # The power of ggplot
-```{r example_plots, include=F}
+```{r example_plots, echo=F}
 # what's the best country for Riesling?
 
 colors_for_chart <- c('#2a1a5e', '#696464')
@@ -360,7 +360,7 @@ edited <- ggplot(data = vis_data) +
 
 .pull-left[
 ### Basic ggplot
-```{r plot-1, message = F, warning = F}
+```{r plot-1, echo = F, warning = F}
 # what's the best country for Riesling?
 basic
 
@@ -369,7 +369,7 @@ basic
 
 .pull-right[
 ### Enhanced ggplot 
-```{r message = F, warning = F}
+```{r echo = F, warning = F}
 # what's the best country for Riesling?
 edited +
   labs(y = 'Average rating of all Rieslings produced in a given country',
@@ -427,7 +427,7 @@ p_with_extra <- arrangeGrob(title_total, subtitle_total, edited,
 .pull-left[
 ### ggplot only
 
-```{r message = F, warning = F}
+```{r echo=F, message = F, warning = F}
 # what's the best country for Riesling?
 edited +
   labs(y = 'Average rating of all Rieslings produced in a given country',
@@ -442,7 +442,7 @@ edited +
 .pull-right[
 ### ggplot + helpers
 
-```{r message = F, warning = F}
+```{r echo=F, message = F, warning = F}
 # what's the best country for Riesling?
 grid.newpage()
 grid.draw(p_with_extra)
@@ -523,3 +523,79 @@ ggplot(data = fake_data_long) +
 
 ```
 ]
+
+---
+
+# Let's make a few plots
+
+![screenshot](screenshot_article.png)
+
+### https://bit.ly/2CIDyG1
+
+---
+# Hands-on start!
+
+```{r }
+brexit <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/brexit.csv")
+```
+
+---
+# A bit of tidying
+
+```{r }
+brexit %>% glimpse
+```
+---
+
+# A bit of tidying
+
+```{r }
+brexit %>% 
+  mutate(date = lubridate::dmy(date)) 
+## BASE R ALTERNATIVE: as.Date(date, format = '%d/%m/%y')
+```
+---
+
+
+# A bit of tidying
+
+```{r }
+brexit %>% 
+  mutate(date = lubridate::dmy(date)) %>%
+  gather(category, percentage, -date)
+
+```
+---
+
+
+# A bit of tidying
+
+```{r }
+brexit <- brexit %>% 
+  mutate(date = lubridate::dmy(date)) %>%
+  gather(category, percentage, -date)
+
+```
+---
+
+
+## Our goal:
+![brexit](brexit.png)
+
+---
+# Let's begin with the base
+
+```{r }
+ggplot(data = brexit) 
+```
+
+---
+# Let's add the line
+
+```{r }
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category))
+```
+

@@ -300,27 +300,11 @@ Seriously no.
 
 .pull-left[
 ### Basic ggplot
-
-```r
-# what's the best country for Riesling?
-basic
-```
-
 ![](presentation_files/figure-html/plot-1-1.png)&lt;!-- --&gt;
 ]
 
 .pull-right[
 ### Enhanced ggplot 
-
-```r
-# what's the best country for Riesling?
-edited +
-  labs(y = 'Average rating of all Rieslings produced in a given country',
-       x = '',
-       title = 'Where does best rated Riesling come from?',
-       subtitle = 'Average Riesling wine rating by country')
-```
-
 ![](presentation_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
 ]
 
@@ -333,29 +317,12 @@ edited +
 .pull-left[
 ### ggplot only
 
-
-```r
-# what's the best country for Riesling?
-edited +
-  labs(y = 'Average rating of all Rieslings produced in a given country',
-       x = '',
-       title = 'Where does best rated Riesling come from?',
-       subtitle = 'Average Riesling wine rating by country')
-```
-
 ![](presentation_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
 
 ]
 
 .pull-right[
 ### ggplot + helpers
-
-
-```r
-# what's the best country for Riesling?
-grid.newpage()
-grid.draw(p_with_extra)
-```
 
 ![](presentation_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
 ]
@@ -460,6 +427,144 @@ ggplot(data = fake_data_long) +
 
 ![](presentation_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
 ]
+
+---
+
+# Let's make a few plots
+
+![screenshot](screenshot_article.png)
+
+### https://bit.ly/2CIDyG1
+
+---
+# Hands-on start!
+
+
+```r
+brexit &lt;- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-04-16/brexit.csv")
+```
+
+```
+## Parsed with column specification:
+## cols(
+##   date = col_character(),
+##   percent_responding_right = col_double(),
+##   percent_responding_wrong = col_double()
+## )
+```
+
+---
+# A bit of tidying
+
+
+```r
+brexit %&gt;% glimpse
+```
+
+```
+## Observations: 85
+## Variables: 3
+## $ date                     &lt;chr&gt; "02/08/16", "09/08/16", "17/08/16", "...
+## $ percent_responding_right &lt;dbl&gt; 46, 45, 46, 45, 47, 46, 45, 45, 46, 4...
+## $ percent_responding_wrong &lt;dbl&gt; 42, 44, 43, 43, 44, 43, 44, 44, 43, 4...
+```
+---
+
+# A bit of tidying
+
+
+```r
+brexit %&gt;% 
+  mutate(date = lubridate::dmy(date)) 
+```
+
+```
+## # A tibble: 85 x 3
+##    date       percent_responding_right percent_responding_wrong
+##    &lt;date&gt;                        &lt;dbl&gt;                    &lt;dbl&gt;
+##  1 2016-08-02                       46                       42
+##  2 2016-08-09                       45                       44
+##  3 2016-08-17                       46                       43
+##  4 2016-08-23                       45                       43
+##  5 2016-08-31                       47                       44
+##  6 2016-09-14                       46                       43
+##  7 2016-10-12                       45                       44
+##  8 2016-10-20                       45                       44
+##  9 2016-11-15                       46                       43
+## 10 2016-11-29                       44                       45
+## # ... with 75 more rows
+```
+
+```r
+## BASE R ALTERNATIVE: as.Date(date, format = '%d/%m/%y')
+```
+---
+
+
+# A bit of tidying
+
+
+```r
+brexit %&gt;% 
+  mutate(date = lubridate::dmy(date)) %&gt;%
+  gather(category, percentage, -date)
+```
+
+```
+## # A tibble: 170 x 3
+##    date       category                 percentage
+##    &lt;date&gt;     &lt;chr&gt;                         &lt;dbl&gt;
+##  1 2016-08-02 percent_responding_right         46
+##  2 2016-08-09 percent_responding_right         45
+##  3 2016-08-17 percent_responding_right         46
+##  4 2016-08-23 percent_responding_right         45
+##  5 2016-08-31 percent_responding_right         47
+##  6 2016-09-14 percent_responding_right         46
+##  7 2016-10-12 percent_responding_right         45
+##  8 2016-10-20 percent_responding_right         45
+##  9 2016-11-15 percent_responding_right         46
+## 10 2016-11-29 percent_responding_right         44
+## # ... with 160 more rows
+```
+---
+
+
+# A bit of tidying
+
+
+```r
+brexit &lt;- brexit %&gt;% 
+  mutate(date = lubridate::dmy(date)) %&gt;%
+  gather(category, percentage, -date)
+```
+---
+
+
+## Our goal:
+![brexit](brexit.png)
+
+---
+# Let's begin with the base
+
+
+```r
+ggplot(data = brexit) 
+```
+
+![](presentation_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+
+---
+# Let's add the line
+
+
+```r
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category))
+```
+
+![](presentation_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
