@@ -493,36 +493,40 @@ head(fake_data_long)
 
 ---
 .pull-left[
-
+.smaller[
 ```{r }
 ggplot(data = fake_data) +
-  geom_point(aes(x = Robot_words, y = Robot),
-             color = 'orange') +
-  geom_point(aes(x = Robot_words, y = Terminator),
-             color = 'darkgrey') + 
+  geom_point(aes(x = Robot_words, #<<
+                 y = Robot, color = 'Robot'), size = 5) + 
+  geom_point(aes(x = Robot_words, #<<
+                 y = Terminator, color = 'Terminator'), size = 5) + 
+  scale_color_manual(values = c('orange', 'darkgray')) +
   theme_classic() +
   labs(x = 'Common robot words',
        y = 'How often they appear in data',
-       title = 'Mysterious robot word data')
+       title = 'Mysterious robot word data',
+       color = 'Robot type')
 
 ```
+]
 ]
 
 .pull-right[
 ```{r }
 ggplot(data = fake_data_long) +
-  geom_point(aes(x = Robot_words, 
-                 y = Frequency,
-                 color = Type_of_robot)) +
-  theme_classic() +
+  geom_point(aes(x = Robot_words, #<<
+                 y = Frequency, color = Type_of_robot), 
+             size = 5) + 
   scale_color_manual(values = c('orange', 'darkgrey')) +
+  theme_classic() +
   labs(x = 'Common robot words',
        y = 'How often they appear in data',
-       title = 'Mysterious robot word data',
+       title = 'Mysterious robot word data', 
        color = 'Robot type') 
 
 ```
 ]
+
 
 ---
 
@@ -546,12 +550,22 @@ brexit <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tid
 brexit %>% glimpse
 ```
 ---
+# A bit of tidying
+
+```{r }
+brexit %>% 
+  rename(wrong = percent_responding_wrong, #<<
+         right = percent_responding_right) #<<
+```
+---
 
 # A bit of tidying
 
 ```{r }
 brexit %>% 
-  mutate(date = lubridate::dmy(date)) 
+  rename(Wrong = percent_responding_wrong,
+         Right = percent_responding_right) %>%
+  mutate(date = lubridate::dmy(date)) #<<
 ## BASE R ALTERNATIVE: as.Date(date, format = '%d/%m/%y')
 ```
 ---
@@ -561,19 +575,36 @@ brexit %>%
 
 ```{r }
 brexit %>% 
+  rename(wrong = percent_responding_wrong,
+       right = percent_responding_right) %>%
   mutate(date = lubridate::dmy(date)) %>%
-  gather(category, percentage, -date)
+  gather(category, percentage, -date) #<<
 
 ```
 ---
 
+# A bit of tidying
+
+```{r }
+brexit %>% 
+  rename(wrong = percent_responding_wrong,
+       right = percent_responding_right) %>%
+  mutate(date = lubridate::dmy(date)) %>%
+  gather(category, percentage, -date) %>%
+  mutate(percentage = percentage / 100) #<<
+
+```
+---
 
 # A bit of tidying
 
 ```{r }
-brexit <- brexit %>% 
+brexit <- brexit %>% #<<
+  rename(wrong = percent_responding_wrong,
+       right = percent_responding_right) %>%
   mutate(date = lubridate::dmy(date)) %>%
-  gather(category, percentage, -date)
+  gather(category, percentage, -date) %>%
+  mutate(percentage = percentage / 100)
 
 ```
 ---
@@ -583,19 +614,1002 @@ brexit <- brexit %>%
 ![brexit](brexit.png)
 
 ---
-# Let's begin with the base
+.left-code[
 
-```{r }
-ggplot(data = brexit) 
+```{r plot-canvas, eval=FALSE}
+ggplot(data = brexit) #<<
 ```
 
----
-# Let's add the line
+]
+.right-plot[
+```{r plot-canvas-out, ref.label="plot-canvas", echo=FALSE}
+```
+]
 
-```{r }
+--
+### Let's add the lines
+---
+
+
+.left-code[
+
+```{r plot-line, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date, #<<
+                y = percentage, #<<
+                group = category)) #<<
+
+```
+]
+.right-plot[
+```{r plot-line-out, ref.label="plot-line", echo=FALSE}
+```
+]
+
+--
+
+### Let's add the color
+
+---
+.left-code[
+```{r plot-color, eval=FALSE}
 ggplot(data = brexit) +
   geom_line(aes(x = date,
                 y = percentage,
-                group = category))
+                group = category,
+                colour = category)) #<<
+```
+]
+
+.right-plot[
+```{r plot-color-out, ref.label="plot-color", echo=FALSE}
+```
+]
+
+--
+
+### Let's add the right colors
+
+---
+
+.left-code[
+```{r plot-colors, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category,
+                colour = category)) +
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) #<<
+```
+]
+
+.right-plot[
+```{r plot-colors-out, ref.label="plot-colors", echo=FALSE}
+```
+]
+
+--
+
+### Now we want to remove the ugly categories
+
+
+---
+
+.left-code[
+```{r plot-nocat, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category,
+                colour = category)) +
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  guides(colour = FALSE) #<<
+```
+]
+.right-plot[
+```{r plot-nocat-out, ref.label="plot-nocat", echo=FALSE}
+```
+]
+
+--
+
+### theme_classic() to make everything better <3
+
+---
+
+.left-code[
+```{r plot-classic, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category,
+                colour = category)) +
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  guides(colour = FALSE) +
+  theme_classic() #<<
+```
+]
+.right-plot[
+```{r plot-classic-out, ref.label="plot-classic", echo=FALSE}
+```
+]
+
+--
+
+### Let's add the gridlines according to the reference plot
+
+---
+.pull-left[
+![](brexit_original.png)
+]
+.pull-right[
+```{r plot-classic-out, ref.label="plot-classic", echo=FALSE}
+```
+]
+
+--
+
+### Essentially what we have left is:
+
+- Adding labels
+- Increasing size of lines & font
+- Changing x and y axis
+- Adding titles & subtitles
+
+---
+.left-code[
+```{r plot-fontsize, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category,
+                colour = category)) +
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18) #<< 
+```
+]
+.right-plot[
+```{r plot-fontsize-out, ref.label="plot-fontsize", echo=FALSE}
+```
+]
+
+--
+
+### Let's increase line size, too
+---
+
+.left-code[
+```{r plot-linesize, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category,
+                colour = category),
+            size = 2) + #<<
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18)
+```
+]
+.right-plot[
+```{r plot-linesize-out, ref.label="plot-linesize", echo=FALSE}
+```
+]
+ 
+--
+
+### Now let's fix the axes (x first)
+
+---
+.left-code[
+```{r plot-dates, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category,
+                colour = category),
+            size = 2) +
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  scale_x_date(date_breaks = "6 months", #<<
+               date_labels = "%b '%y") + #<<
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18)
+
+```
+]
+
+.right-plot[
+```{r plot-dates-out, ref.label="plot-dates", echo=FALSE}
+```
+]
+
+--
+
+### Not ideal for our situation but shows the date_breaks trick!
+
+--
+.pull-right[
+### Onto the y-axis!
+]
+---
+# Introducing scales!
+
+```{r message=FALSE, warning=FALSE}
+require(scales) || install.packages('scales')
 ```
 
+.pull-left[
+#### - percent()
+```{r }
+percent(0.04)
+```
+
+
+#### - number()
+```{r }
+number(2405050)
+```
+]
+
+.pull-right[
+#### - dollar()
+```{r }
+dollar(1500)
+```
+
+#### - comma()
+```{r }
+comma(15000000)
+```
+]
+
+---
+
+.left-code[
+```{r plot-percent, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category,
+                colour = category),
+            size = 2) +
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  scale_x_date(date_breaks = "6 months", 
+               date_labels = "%b '%y") + 
+  scale_y_continuous(breaks = c(seq(0.38, 0.48, 0.02)), #<<
+                     labels = percent) + #<<
+  coord_cartesian(ylim = c(0.38,max(brexit$percentage))) + #<<
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18)
+
+```
+]
+
+.right-plot[
+```{r plot-percent-out, ref.label="plot-percent", echo=FALSE}
+```
+]
+
+--
+
+### Original chart doesn't have any decimal points, though
+
+---
+.left-code[
+```{r plot-decimals, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category,
+                colour = category),
+            size = 2) +
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  scale_x_date(date_breaks = "6 months", 
+               date_labels = "%b '%y") + 
+  scale_y_continuous(breaks = c(seq(0.38, 0.48, 0.02)), 
+                     labels = percent_format(accuracy = 1)) + #<<
+  coord_cartesian(ylim = c(0.38,max(brexit$percentage))) +
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18)
+
+```
+]
+
+.right-plot[
+```{r plot-decimals-out, ref.label="plot-decimals", echo=FALSE}
+```
+]
+
+--
+
+### Moving y axis to the right side!
+
+---
+
+.left-code[
+```{r plot-right, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category,
+                colour = category),
+            size = 2) +
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  scale_x_date(date_breaks = "6 months", 
+               date_labels = "%b '%y") + 
+  scale_y_continuous(breaks = c(seq(0.38, 0.48, 0.02)), 
+                     labels = percent_format(accuracy = 1),
+                     position = 'right') + #<<
+  coord_cartesian(ylim = c(0.38,max(brexit$percentage))) +
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18)
+
+```
+]
+
+.right-plot[
+```{r plot-right-out, ref.label="plot-right", echo=FALSE}
+```
+]
+
+---
+# How are we doing?
+
+.pull-left[
+![](brexit_original.png)
+]
+.pull-right[
+```{r plot-right-out, ref.label="plot-right", echo=FALSE}
+```
+
+TO-DO:
+
+- Adding labels
+- Adding titles & subtitles
+- Adding the grid back
+]
+
+---
+
+.left-code[
+.smaller[
+```{r plot-grid, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category,
+                colour = category),
+            size = 2) +
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  scale_x_date(date_breaks = "6 months", 
+               date_labels = "%b '%y") + 
+  scale_y_continuous(breaks = c(seq(0.38, 0.48, 0.02)), 
+                     labels = percent_format(accuracy = 1),
+                     position = 'right') +
+  coord_cartesian(ylim = c(0.38,max(brexit$percentage))) +
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18) + 
+  theme(panel.grid.major.y = element_line( #<<
+          colour = '#c2cdd4', #<<
+          linetype = 'solid', #<<
+          size = 0.5 #<<
+        ))
+
+```
+]
+]
+
+.right-plot[
+```{r plot-grid-out, ref.label="plot-grid", echo=FALSE}
+```
+]
+
+--
+
+### Now onto the labels!
+
+---
+
+# Introducing ggrepel!
+
+```{r message=FALSE, warning=FALSE}
+require(ggrepel) || install.packages('ggrepel')
+```
+
+![](ggrepel.png)
+
+--
+.pull-right[
+.smaller-image[
+![](https://media.giphy.com/media/11ISwbgCxEzMyY/giphy.gif)
+]
+]
+
+---
+
+# Creating data for ggrepel
+.pull-left[
+![](brexit_original.png)
+]
+
+.pull-right[
+```{r }
+brexit %>% 
+  group_by(category) %>%
+  mutate(rank = rank(desc(date), ties.method = "first")) #<<
+```
+]
+
+---
+.pull-left[
+![](brexit_original.png)
+]
+
+.pull-right[
+```{r }
+brexit <- brexit %>% #<<
+  group_by(category) %>%
+  mutate(rank = rank(desc(date), ties.method = "first"),
+         label_data = if_else(rank == 15, #<< 
+                              category, #<< 
+                              NA_character_)) #<< 
+```
+]
+
+
+---
+
+.left-code[
+.smaller[
+```{r plot-ggrepel, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category,
+                colour = category),
+            size = 2) +
+  geom_label_repel(data = brexit, #<<
+                  aes(x = date, #<<
+                      y = percentage, #<<
+                      colour = label_data, #<<
+                      label = label_data)) + #<<
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  scale_x_date(date_breaks = "6 months", 
+               date_labels = "%b '%y") + 
+  scale_y_continuous(breaks = c(seq(0.38, 0.48, 0.02)), 
+                     labels = percent_format(accuracy = 1),
+                     position = 'right') +
+  coord_cartesian(ylim = c(0.38,max(brexit$percentage))) +
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18) + 
+  theme(panel.grid.major.y = element_line(
+          colour = '#c2cdd4', 
+          linetype = 'solid', 
+          size = 0.5 
+        ))
+```
+]
+]
+
+.right-plot[
+```{r plot-ggrepel-out, ref.label="plot-ggrepel", echo=FALSE}
+```
+]
+
+---
+
+.left-code[
+.smaller[
+```{r plot-ggrepelnudge, eval=FALSE}
+ggplot(data = brexit) +
+  geom_line(aes(x = date,
+                y = percentage,
+                group = category,
+                colour = category),
+            size = 2) +
+  geom_label_repel(data = brexit,
+                  aes(x = date, 
+                      y = percentage, 
+                      colour = label_data, 
+                      label = label_data),
+                  nudge_y = 0.01, #<<
+                  na.rm = TRUE, #<< 
+                  size = 10) + #<< 
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  scale_x_date(date_breaks = "6 months", 
+               date_labels = "%b '%y") + 
+  scale_y_continuous(breaks = c(seq(0.38, 0.48, 0.02)), 
+                     labels = percent_format(accuracy = 1),
+                     position = 'right') +
+  coord_cartesian(ylim = c(0.38,max(brexit$percentage))) +
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18) + 
+  theme(panel.grid.major.y = element_line(
+          colour = '#c2cdd4', 
+          linetype = 'solid', 
+          size = 0.5 
+        ))
+```
+]
+]
+
+.right-plot[
+```{r plot-ggrepelnudge-out, ref.label="plot-ggrepelnudge", echo=FALSE}
+```
+]
+
+---
+
+# Clean up time
+
+```{r eval=FALSE}
+ggplot(data = brexit) +#<<
+  geom_line(aes(x = date,#<<
+                y = percentage,#<<
+                group = category,
+                colour = category), #<<
+             size = 2) +
+  geom_label_repel(data = brexit, #<<
+                  aes(x = date, #<<
+                      y = percentage, #<<
+                      colour = label_data, #<<
+                      label = label_data),
+                  nudge_y = 0.01, 
+                  na.rm = TRUE, 
+                  size = 10) + 
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  scale_x_date(date_breaks = "6 months", 
+               date_labels = "%b '%y") + 
+  scale_y_continuous(breaks = c(seq(0.38, 0.48, 0.02)), 
+                     labels = percent_format(accuracy = 1),
+                     position = 'right') +
+  coord_cartesian(ylim = c(0.38,max(brexit$percentage))) +
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18) + 
+  theme(panel.grid.major.y = element_line(
+          colour = '#c2cdd4', 
+          linetype = 'solid', 
+          size = 0.5 
+        ))
+```
+
+
+
+---
+
+.left-code[
+.smaller[
+```{r plot-reorder, eval=FALSE}
+ggplot(data = brexit,
+       aes(x = date, #<<
+           y = percentage, #<<
+           colour = category)) + #<<
+  geom_line(aes(group = category), #<<
+             size = 2) +
+  geom_label_repel(aes(label = label_data), #<<
+                  nudge_y = 0.01, 
+                  na.rm = TRUE, 
+                  size = 10) + 
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  scale_x_date(date_breaks = "6 months", 
+               date_labels = "%b '%y") + 
+  scale_y_continuous(breaks = c(seq(0.38, 0.48, 0.02)), 
+                     labels = percent_format(accuracy = 1),
+                     position = 'right') +
+  coord_cartesian(ylim = c(0.38,max(brexit$percentage))) +
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18) + 
+  theme(panel.grid.major.y = element_line(
+          colour = '#c2cdd4', 
+          linetype = 'solid', 
+          size = 0.5 
+        ))
+```
+]
+]
+.right-plot[
+```{r plot-reorder-out, ref.label="plot-reorder", echo=FALSE}
+```
+]
+
+---
+
+# Removing axis titles
+
+.left-code[
+.tiny[
+```{r plot-axistitle, eval=FALSE}
+ggplot(data = brexit,
+       aes(x = date, 
+           y = percentage, 
+           colour = category)) + 
+  geom_line(aes(group = category),
+             size = 2) +
+  geom_label_repel(aes(label = label_data), 
+                  nudge_y = 0.01, 
+                  na.rm = TRUE, 
+                  size = 10) + 
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  scale_x_date(date_breaks = "6 months", 
+               date_labels = "%b '%y") + 
+  scale_y_continuous(breaks = c(seq(0.38, 0.48, 0.02)), 
+                     labels = percent_format(accuracy = 1),
+                     position = 'right') +
+  coord_cartesian(ylim = c(0.38,max(brexit$percentage))) +
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18) + 
+  theme(panel.grid.major.y = element_line(
+          colour = '#c2cdd4', 
+          linetype = 'solid', 
+          size = 0.5 
+        ),
+        axis.title.x = element_blank(), #<<
+        axis.title.y = element_blank()) #<<
+```
+]
+]
+
+.right-plot[
+```{r plot-axistitle-out, ref.label="plot-axistitle", echo=FALSE}
+```
+]
+---
+
+### Assign the above to {p_original}
+```{r}
+p_original <- ggplot(data = brexit, #<<
+       aes(x = date, 
+           y = percentage, 
+           colour = category)) + 
+  geom_line(aes(group = category),
+             size = 2) +
+  geom_label_repel(aes(label = label_data), 
+                  nudge_y = 0.01, 
+                  na.rm = TRUE, 
+                  size = 10) + 
+  scale_color_manual(values = c("#116ea0", "#dd6e6d")) +
+  scale_x_date(date_breaks = "6 months", 
+               date_labels = "%b '%y") + 
+  scale_y_continuous(breaks = c(seq(0.38, 0.48, 0.02)), 
+                     labels = percent_format(accuracy = 1, PREFIX = ''),
+                     position = 'right') +
+  coord_cartesian(ylim = c(0.38, max(brexit$percentage))) +
+  guides(colour = FALSE) +
+  theme_classic(base_size = 18) + 
+  theme(panel.grid.major.y = element_line(
+          colour = '#c2cdd4', 
+          linetype = 'solid', 
+          size = 0.5 
+        ),
+        axis.title.x = element_blank(), #<<
+        axis.title.y = element_blank()) #<<
+```
+---
+
+# Introducing: gridExtra
+
+```{r message=FALSE, warning=FALSE}
+require(gridExtra, grid) || install.packages('gridExtra', 'grid')
+```
+
+### GROBs
+
+#### = graphical objects
+
+--
+
+### grid.arrange()
+
+#### drawing on device (e.g., "Plots" in the editor)
+
+--
+
+### arrangeGrob()
+
+#### more complex layouts
+
+
+---
+
+
+.pull-left[
+.smaller[
+```{r }
+super_quick_plot <- ggplot(data = datasets::iris) +
+  geom_point(aes(x = Sepal.Length,
+                 y = Petal.Length,
+                 colour = Species)) +
+  theme_classic() +
+  ggtitle('Lengths of iris sepals and petals') +
+  guides(colour = guide_legend(override.aes = list(size=4))) +
+  theme(legend.position="top")
+
+super_quick_plot
+```
+]
+]
+
+.pull-right[
+.smaller[
+```{r }
+super_quick_plot2 <- ggplot(data = datasets::iris) +
+  geom_point(aes(x = Sepal.Width,
+                 y = Petal.Width,
+                 colour = Species)) +
+  theme_classic() +
+  ggtitle('Widths of iris sepals and petals') +
+  guides(colour = guide_legend(override.aes = list(size=4))) +
+  theme(legend.position="top")
+
+super_quick_plot2
+```
+]
+]
+
+---
+
+# Grid Extra magic
+
+```{r}
+
+grid.arrange(super_quick_plot, 
+             super_quick_plot2,
+             ncol=2)
+```
+
+--
+
+
+```{r}
+
+grid.arrange(super_quick_plot, 
+             super_quick_plot2,
+             nrow=2)
+```
+
+---
+
+```{r}
+
+fake_space <- rectGrob(gp=gpar(fill="white",
+                               col = "white"))
+text <- textGrob("Beep Boop I love flowers")
+
+grid.arrange(super_quick_plot, 
+             fake_space,
+             super_quick_plot2,
+             text,
+             nrow=2)
+
+```
+
+---
+
+### GridExtra for special layouts in one chart
+
+.pull-left[
+```{r}
+# Step 1: Create grobs
+title.grob <- textGrob("Bremorse",
+  gp = gpar(fontsize = 22))
+
+foot.grob <- textGrob(
+  label = "Source: NatCen Social Research",
+  gp = gpar(fontsize = 15))
+
+# Step 2: Arrange grobs
+p_original_grid <- arrangeGrob(p_original, 
+                  top = title.grob,
+                  bottom = foot.grob)
+
+```
+]
+.pull-right[
+```{r }
+# Step 3: Draw the arranged grob
+grid.draw(p_original_grid)
+```
+]
+
+---
+
+.pull-left[
+```{r}
+title.grob <- textGrob("Bremorse",
+  x = unit(0, "lines"), #<<
+  y = unit(0, "lines"), #<<
+  gp = gpar(fontsize = 22))
+
+foot.grob <- textGrob(
+  label = "Source: NatCen Social Research",
+  x = unit(0, "lines"), #<<
+  y = unit(0, "lines"), #<<
+  gp = gpar(fontsize = 15))
+
+p_original_grid <- arrangeGrob(p_original, 
+                  top = title.grob,
+                  bottom = foot.grob)
+
+```
+]
+
+.pull-right[
+```{r }
+grid.draw(p_original_grid)
+```
+]
+
+--
+
+### Hmm
+
+
+---
+
+.pull-left[
+```{r}
+title.grob <- textGrob("Bremorse",
+  x = unit(0, "lines"),
+  y = unit(0, "lines"), 
+  hjust = -0.1, #<<
+  gp = gpar(fontsize = 22))
+
+foot.grob <- textGrob(
+  label = "Source: NatCen Social Research",
+  x = unit(0, "lines"), 
+  y = unit(0, "lines"), 
+  hjust = -0.1, #<<
+  gp = gpar(fontsize = 15))
+
+p_original_grid <- arrangeGrob(p_original, 
+                  top = title.grob,
+                  bottom = foot.grob)
+
+```
+]
+
+.pull-right[
+```{r }
+grid.draw(p_original_grid)
+```
+]
+
+--
+
+### Footer is too low :O
+
+
+---
+
+.pull-left[
+```{r}
+title.grob <- textGrob("Bremorse",
+  x = unit(0, "lines"),
+  y = unit(0, "lines"), 
+  hjust = -0.1, 
+  gp = gpar(fontsize = 22))
+
+foot.grob <- textGrob(
+  label = "Source: NatCen Social Research",
+  x = unit(0, "lines"), 
+  y = unit(0, "lines"), 
+  hjust = -0.1, 
+  vjust = -0.2, #<<
+  gp = gpar(fontsize = 15))
+
+p_original_grid <- arrangeGrob(p_original, 
+                  top = title.grob,
+                  bottom = foot.grob)
+
+```
+]
+
+.pull-right[
+```{r }
+grid.draw(p_original_grid)
+```
+]
+
+---
+
+# Introducing ggthemes!
+
+```{r }
+require(ggthemes) || install.packages('ggthemes')
+```
+
+![](themes.png)
+
+---
+
+.left-code[
+```{r plot-economist, eval=FALSE}
+p_original + 
+  ggthemes::scale_color_economist()
+```
+]
+
+.right-plot[
+```{r plot-economist-out, ref.label="plot-economist", echo=FALSE}
+```
+]
+
+---
+
+.left-code[
+```{r plot-excel, eval=FALSE}
+p_original + 
+  ggthemes::scale_color_excel()
+```
+]
+
+.right-plot[
+```{r plot-excel-out, ref.label="plot-excel", echo=FALSE}
+```
+]
+
+---
+
+# Introducing RColorBrewer
+
+```{r }
+require(RColorBrewer) || install.packages('RColorBrewer')
+```
+
+![](rcolorbrewer.png)
+
+
+---
+.pull-left[
+```{r }
+ggplot(data = datasets::iris) +
+  geom_point(aes(x = Petal.Width,
+                 y = Petal.Length,
+                 colour = Species)) +
+  theme_classic() +
+  scale_color_brewer(palette = 'Set2')
+```
+]
+
+
+.pull-right[
+```{r }
+ggplot(data = datasets::iris) +
+  geom_point(aes(x = Petal.Width,
+                 y = Species,
+                 color = Petal.Length)) +
+  theme_classic() +
+  scale_color_distiller(palette = "RdYlBu")
+```
+]
+
+
+---
+# Do-s summary
+
+- Do not use defaults, fastest way to get rid of them is using theme_classic() or similar
+
+--
+
+- labs() is very useful and quick for all axis/legend titles
+
+--
+
+- Use pre-made palettes for discrete data from RColorBrewer
+
+--
+
+- Use scales to ensure correct y-axis without extra effort
+
+--
+
+- Set base font size inside theme() or theme_classic()
+
+--
+
+- geom_text_repel / geom_label_repel for easier reading!
+
+--
+
+- theme(legend.position = 'top') is super quick but makes visualisation easier to read
