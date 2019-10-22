@@ -32,10 +32,17 @@ mono_light(
   code_font_google   = google_font("Quicksand")
 )
 
-wine_ratings <- readr::read_csv('data_wine.csv')
+load('.RData')
 
 ```
 
+# Practicalities
+
+Wi-Fi: Download Best Fiends!
+
+PW: funandgames
+
+---
 
 # Introduction
 
@@ -85,8 +92,7 @@ Looking for:
 .pull-left[
 * Visualisation in general
 * Thinking behind ggplot
-* Basic plots - we'll cover a few main ones
-* More complex plots - replicating a few complex charts
+* Basic plot which will slowly turn into a complex one
 ]
 
 .pull-right[
@@ -554,8 +560,8 @@ brexit %>% glimpse
 
 ```{r }
 brexit %>% 
-  rename(wrong = percent_responding_wrong, #<<
-         right = percent_responding_right) #<<
+  rename(Wrong = percent_responding_wrong, #<<
+         Right = percent_responding_right) #<<
 ```
 ---
 
@@ -575,8 +581,8 @@ brexit %>%
 
 ```{r }
 brexit %>% 
-  rename(wrong = percent_responding_wrong,
-       right = percent_responding_right) %>%
+  rename(Wrong = percent_responding_wrong,
+       Right = percent_responding_right) %>%
   mutate(date = lubridate::dmy(date)) %>%
   gather(category, percentage, -date) #<<
 
@@ -587,8 +593,8 @@ brexit %>%
 
 ```{r }
 brexit %>% 
-  rename(wrong = percent_responding_wrong,
-       right = percent_responding_right) %>%
+  rename(Wrong = percent_responding_wrong,
+       Right = percent_responding_right) %>%
   mutate(date = lubridate::dmy(date)) %>%
   gather(category, percentage, -date) %>%
   mutate(percentage = percentage / 100) #<<
@@ -600,8 +606,8 @@ brexit %>%
 
 ```{r }
 brexit <- brexit %>% #<<
-  rename(wrong = percent_responding_wrong,
-       right = percent_responding_right) %>%
+  rename(Wrong = percent_responding_wrong,
+       Right = percent_responding_right) %>%
   mutate(date = lubridate::dmy(date)) %>%
   gather(category, percentage, -date) %>%
   mutate(percentage = percentage / 100)
@@ -1018,13 +1024,6 @@ require(ggrepel) || install.packages('ggrepel')
 ```
 
 ![](ggrepel.png)
-
---
-.pull-right[
-.smaller-image[
-![](https://media.giphy.com/media/11ISwbgCxEzMyY/giphy.gif)
-]
-]
 
 ---
 
